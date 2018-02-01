@@ -1,14 +1,15 @@
 /*
  * action types
  */
+export const NEWDOSSIER = 'NEWDOSSIER';
 export const SELECTPERSON = 'SELECTPERSON';
-export const RETURNTOSEARCH = 'RETURNTOSEARCH';
+
 /*
  * action creators
  */
+export function newDossier(payload) {
+    return { type: NEWDOSSIER, payload: payload }
+}
 export function selectPerson(payload) {
     return { type: SELECTPERSON, payload: payload }
-}
-export function returnToSearch(payload) {
-    return { type: RETURNTOSEARCH, payload: payload }
 }
