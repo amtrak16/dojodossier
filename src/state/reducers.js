@@ -1,34 +1,38 @@
 import {
     NEWDOSSIER,
-    SELECTPERSON,
+    ADDNEWITEM,
 } from './actions'
 
 class Dossier {
     constructor(
         id,
         title,
-        items
+        items,
+        item
     ) {
         this.id = id;
         this.title = title;
         this.items = items;
+        this.item = item;
     }
 }
 
 const initialState = {
-    dossier: [{id: 0, title: 'Initial', items: []}]
+    dossier: [{id: 0, title: '', items: [{item: ''}]}]
 }
+
 function reducer(state = initialState, action) {
-    console.log(action.type) 
     switch (action.type) {
         case NEWDOSSIER:
             const newDoss = new Dossier(action.payload.id, action.payload.title, action.payload.items)
-            return { ...state, newDoss };
-            console.log(newDoss)
-        case SELECTPERSON:
-            return { ...state, peopleSelect: action.payload.peopleSelect, peopleSelected: action.payload.peopleSelected};
+            let newArr = []
+            newArr.push(newDoss)
+            console.log(newArr)
+            return { ...state, dossier: state.dossier.concat(newArr) };
+        case ADDNEWITEM:
+            console.log(action.payload)
+            return { ...state, dossier: state.dossier[action.payload.id].items.concat(action.payload.items)};
         default:
-            console.log('In reducer default')
             return state;
     }
 }
