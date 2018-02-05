@@ -34,13 +34,12 @@ class App extends Component {
   onAddTitle(evt) {
     evt.preventDefault();
     this.props.clrActive()
-    this.props.newDossier({ curId: true, title: this.state.titleVal, items: [] })
+    this.props.newDossier({ curId: true, title: this.state.titleVal, items: [{item: ''}] })
   }
 
   onSelTitle(evt) {
     evt.preventDefault();
     this.props.clrActive()
-    console.log(evt.target.id)
     this.props.selDossier({ selId: evt.target.id })
   }
 
@@ -57,12 +56,19 @@ class App extends Component {
     this.props.dossier.forEach((dossier, idx) => {
       if (dossier.curId) {
         this.props.addNewItem({ selId: idx, item: this.state.itemVal })
+        this.setState({itemVal: ''})
       }
     })
   }
   
   render() {
-    return (
+    let curDoss = undefined
+    this.props.dossier.forEach((dossier, idx) => {
+      if (dossier.curId) {
+          curDoss = dossier
+      }})
+
+        return (
       <div className="App">
         <header className="App-header">
           <h1 className="App-title">{this.props.title}</h1>
@@ -75,14 +81,14 @@ class App extends Component {
                   <input type="search" id="title_in" placeholder='Title' value={this.state.titleVal} onChange={this.onTitleIn} />
                   <label for="title_in"></label>
                   <span className="error">{this.state.titleMsg}</span>
+                  <div className="small-9 columns">&nbsp;</div>
                 </div>
-                <div className="small-9 columns"></div>
-                <div className="row">
-                  <div className="small-2 columns padding-small">
-                    <button className="button btn-cta" disabled={this.state.disableSbmBtn} onClick={this.onAddTitle}>Add New Tab</button>
-                  </div>
-                  <div className="small-10 columns" ></div>
+              </div>
+              <div className="row">
+                <div className="small-2 columns">
+                  <button className="button btn-cta" disabled={this.state.disableSbmBtn} onClick={this.onAddTitle}>Add New Tab</button>
                 </div>
+                <div className="small-10 columns" >&nbsp;</div>
               </div>
             </div>
 
@@ -102,18 +108,14 @@ class App extends Component {
           </div>
 
           <div className="card">
-            <div className="row">
-              <div className="small-2 columns">
-                {this.props.dossier.forEach((dossier, idx) => {
-                  if (dossier.curId) {
-                    console.log(dossier.items)
-                    dossier.items.map((item) => {
-                      return(<div>{item}</div>)
-                    })
+                    {curDoss ? curDoss.items.map((item, idx) => {
+                  return (<div className="row">
+                            <div className="small-2 columns">
+                              <p className="small-10 columns" key={idx}>{item.item}</p>
+                            </div>
+                          </div>)
+                    }): <p> Hello There </p>
                   }
-                })}
-              </div>
-            </div>
           </div>
 
           <div className="card">
@@ -123,35 +125,36 @@ class App extends Component {
                 <label for="item_in"></label>
                 <span className="error">{this.state.itemMsg}</span>
               </div>
-              <div className="small-9 columns"></div>
-              <div className="row">
-                <div className="small-2 columns padding-small">
-                  <button className="button btn-cta" onClick={this.onAddItem}>Add New Item</button>
-                </div>
-                <div className="small-10 columns" ></div>
+              <div className="small-9 columns">&nbsp;</div>
+            </div>
+            <div className="row">
+              <div className="small-2 columns">
+                <button className="button btn-cta" onClick={this.onAddItem}>Add New Item</button>
               </div>
+              <div className="small-10 columns" >&nbsp;</div>
             </div>
           </div>
         </form>
+
       </div>
     );
   }
 }
 
-class RenderTabItems extends Component {
-  render() {
-    return (
-      <div className="card">
-        <div className="row">
-          <div className="small-2 columns">
-            {this.props.items.map(({item}) =>
-            <li>{item}</li>)}
-          </div>
-        </div>
-      </div>
-    )
-  }
-}
+// class RenderTabItems extends Component {
+//   render() {
+//     return (
+//       <div className="card">
+//         <div className="row">
+//           <div className="small-2 columns">
+//             {this.props.items.map(({item}) =>
+//             <li>{item}</li>)}
+//           </div>
+//         </div>
+//       </div>
+//     )
+//   }
+// }
 
 const mapStateToProps = (state) => {
   return {

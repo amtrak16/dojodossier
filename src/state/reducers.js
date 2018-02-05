@@ -31,14 +31,14 @@ function reducer(state = initialState, action) {
             newArr.push(newDoss)
             return { ...state, dossier: state.dossier.concat(newArr) }
         case ADDNEWITEM:
-            updArr = []
+            let updArr = []
             state.dossier.forEach((dossier, idx) => {
                 if (idx == action.payload.selId) {
                     let newItems = []
                     dossier.items.forEach((item) => {
                         newItems.push(item)
                     })
-                    newItems.push(action.payload.item)
+                    newItems.push({item: action.payload.item})
                     const updDoss = new Dossier(dossier.curId, dossier.title, newItems)
                     updArr.push(updDoss)
                 } else {
@@ -47,7 +47,7 @@ function reducer(state = initialState, action) {
             })
             return { ...state, dossier: updArr }
         case CLRACTIVE:
-            let updArr = []
+            updArr = []
             state.dossier.forEach((dossier, idx) => {
                 const updDoss = dossier
                 updDoss.curId = false
