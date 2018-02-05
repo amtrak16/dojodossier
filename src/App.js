@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './ui-toolkit/css/nm-cx/main.css'
 import { connect } from 'react-redux';
-import { newDossier, addNewItem } from './state/actions';
+import { newDossier, addNewItem, clrActive, selDossier } from './state/actions';
 
 class App extends Component {
   constructor(props) {
@@ -14,12 +14,12 @@ class App extends Component {
       disableSbmBtn: true,
       itemVal: '',
       itemMsg: '',
-      itemErr: false,
-      curId: 0
+      itemErr: false
     }
     this.onTitleIn = this.onTitleIn.bind(this)
-    this.onTitleClick = this.onTitleClick.bind(this)
-    this.onItemClick = this.onItemClick.bind(this)
+    this.onAddTitle = this.onAddTitle.bind(this)
+    this.onSelTitle = this.onSelTitle.bind(this)
+    this.onAddItem = this.onAddItem.bind(this)
     this.onItemIn = this.onItemIn.bind(this)
   }
 
@@ -31,9 +31,17 @@ class App extends Component {
     }
   }
 
-  onTitleClick(evt) {
+  onAddTitle(evt) {
     evt.preventDefault();
-    this.props.newDossier({ id: 1, title: this.state.titleVal, items: [{item:'First item'}]})
+    this.props.clrActive()
+    this.props.newDossier({ curId: true, title: this.state.titleVal, items: [] })
+  }
+
+  onSelTitle(evt) {
+    evt.preventDefault();
+    this.props.clrActive()
+    console.log(evt.target.id)
+    this.props.selDossier({ selId: evt.target.id })
   }
 
   onItemIn({ target }) {
@@ -44,9 +52,13 @@ class App extends Component {
     }
   }
 
-  onItemClick({ evt }) {
+  onAddItem(evt) {
     evt.preventDefault();
-    this.props.addNewItem({ id: this.state.curId, items: [{ item: evt.target.value }] })
+    this.props.dossier.forEach((dossier, idx) => {
+      if (dossier.curId) {
+        this.props.addNewItem({ selId: idx, item: this.state.itemVal })
+      }
+    })
   }
   
   render() {
@@ -56,37 +68,67 @@ class App extends Component {
           <h1 className="App-title">{this.props.title}</h1>
         </header>
         <p className="App-intro"></p>
-          <form>
-            <div class="card">
-                <div class="row">
-                  <div class="small-3 columns md-text-field with-floating-label icon-left">
-                    <input type="search" id="people_in" placeholder='Title' value={this.state.titleVal} onChange={this.onTitleIn} />
-                    <label for="title_in"></label>
-                    <span class="error">{this.state.titleMsg}</span>
+        <form onSubmit>
+          <div className="card">
+              <div className="row">
+                <div className="small-3 columns md-text-field with-floating-label icon-left">
+                  <input type="search" id="title_in" placeholder='Title' value={this.state.titleVal} onChange={this.onTitleIn} />
+                  <label for="title_in"></label>
+                  <span className="error">{this.state.titleMsg}</span>
+                </div>
+                <div className="small-9 columns"></div>
+                <div className="row">
+                  <div className="small-2 columns padding-small">
+                    <button className="button btn-cta" disabled={this.state.disableSbmBtn} onClick={this.onAddTitle}>Add New Tab</button>
                   </div>
-                  <div class="small-9 columns"></div>
-                  <div class="row">
-                    <div class="small-2 columns padding-small">
-                      <button class="button btn-cta" disabled={this.state.disableSbmBtn} onClick={this.onTitleClick}>Add New Tab</button>
-                    </div>
-                    <div class="small-10 columns" ></div>
-                  </div>
+                  <div className="small-10 columns" ></div>
                 </div>
               </div>
-          <RenderTabs dossier={this.props.dossier} />
-          <div class="card">
-            <div class="row">
-              <div class="small-3 columns md-text-field with-floating-label icon-left">
-                <input type="search" id="people_in" placeholder='New Item' value={this.state.itemVal} onChange={this.onItemIn} />
-                <label for="title_in"></label>
-                <span class="error">{this.state.itemMsg}</span>
+            </div>
+
+          <div className="card">
+            <ul className="filter-nav">
+              {this.props.dossier.map((dossier, idx) => {
+                if (dossier.curId) {
+                  return (
+                    <li className="filter-nav-entry active" key={idx} ><button id={idx} onClick={this.onSelTitle}>{dossier.title}</button></li>)
+                }
+                else {
+                  return (
+                    <li className="filter-nav-entry" key={idx} ><button id={idx} onClick={this.onSelTitle}>{dossier.title}</button></li>)
+                }
+              })}
+            </ul>
+          </div>
+
+          <div className="card">
+            <div className="row">
+              <div className="small-2 columns">
+                {this.props.dossier.forEach((dossier, idx) => {
+                  if (dossier.curId) {
+                    console.log(dossier.items)
+                    dossier.items.map((item) => {
+                      return(<div>{item}</div>)
+                    })
+                  }
+                })}
               </div>
-              <div class="small-9 columns"></div>
-              <div class="row">
-                <div class="small-2 columns padding-small">
-                  <button class="button btn-cta" onClick={this.onItemClick}>Add New Item</button>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="row">
+              <div className="small-3 columns md-text-field with-floating-label icon-left">
+                <input type="search" id="item_in" placeholder='New Item' value={this.state.itemVal} onChange={this.onItemIn} />
+                <label for="item_in"></label>
+                <span className="error">{this.state.itemMsg}</span>
+              </div>
+              <div className="small-9 columns"></div>
+              <div className="row">
+                <div className="small-2 columns padding-small">
+                  <button className="button btn-cta" onClick={this.onAddItem}>Add New Item</button>
                 </div>
-                <div class="small-10 columns" ></div>
+                <div className="small-10 columns" ></div>
               </div>
             </div>
           </div>
@@ -96,29 +138,12 @@ class App extends Component {
   }
 }
 
-class RenderTabs extends Component {
-  render() {
-    return (
-      <div class="card">
-        <ul class="filter-nav">
-          {this.props.dossier.map(({ title }, idx) =>
-            <li class="filter-nav-entry active" id={idx}><button>{title}</button></li>
-          )}
-          {/* {this.props.dossier.map(({ items }) =>
-            <RenderTabItems items={items}/>
-          )} */}
-        </ul>
-      </div>
-    )
-  }
-}
-
 class RenderTabItems extends Component {
   render() {
     return (
-      <div class="card">
-        <div class="row">
-          <div class="small-2 columns">
+      <div className="card">
+        <div className="row">
+          <div className="small-2 columns">
             {this.props.items.map(({item}) =>
             <li>{item}</li>)}
           </div>
@@ -128,10 +153,10 @@ class RenderTabItems extends Component {
   }
 }
 
-
 const mapStateToProps = (state) => {
   return {
     dossier: state.dossier
+    // items: state.dossier.items
   }
 }
 
@@ -142,6 +167,12 @@ const mapDispatchToProps = (dispatch) => {
     },
     addNewItem: function (payload) {
       dispatch(addNewItem(payload))
+    },
+    clrActive: function () {
+      dispatch(clrActive())
+    },
+    selDossier: function (payload) {
+      dispatch(selDossier(payload))
     }
   }
 }

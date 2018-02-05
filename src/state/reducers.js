@@ -1,16 +1,18 @@
 import {
     NEWDOSSIER,
     ADDNEWITEM,
+    CLRACTIVE,
+    SELDOSSIER
 } from './actions'
 
 class Dossier {
     constructor(
-        id,
+        curId,
         title,
         items,
         item
     ) {
-        this.id = id;
+        this.curId = curId;
         this.title = title;
         this.items = items;
         this.item = item;
@@ -18,20 +20,52 @@ class Dossier {
 }
 
 const initialState = {
-    dossier: [{id: 0, title: '', items: [{item: ''}]}]
+    dossier: [{curId: false, title: '', items: [{item: ''}]}]
 }
 
 function reducer(state = initialState, action) {
     switch (action.type) {
         case NEWDOSSIER:
-            const newDoss = new Dossier(action.payload.id, action.payload.title, action.payload.items)
+            const newDoss = new Dossier(action.payload.curId, action.payload.title, action.payload.items)
             let newArr = []
             newArr.push(newDoss)
-            console.log(newArr)
-            return { ...state, dossier: state.dossier.concat(newArr) };
+            return { ...state, dossier: state.dossier.concat(newArr) }
         case ADDNEWITEM:
-            console.log(action.payload)
-            return { ...state, dossier: state.dossier[action.payload.id].items.concat(action.payload.items)};
+            updArr = []
+            state.dossier.forEach((dossier, idx) => {
+                if (idx == action.payload.selId) {
+                    let newItems = []
+                    dossier.items.forEach((item) => {
+                        newItems.push(item)
+                    })
+                    newItems.push(action.payload.item)
+                    const updDoss = new Dossier(dossier.curId, dossier.title, newItems)
+                    updArr.push(updDoss)
+                } else {
+                    updArr.push(dossier)
+                }
+            })
+            return { ...state, dossier: updArr }
+        case CLRACTIVE:
+            let updArr = []
+            state.dossier.forEach((dossier, idx) => {
+                const updDoss = dossier
+                updDoss.curId = false
+                updArr.push(updDoss)
+            })
+            return { ...state, dossier: updArr }
+        case SELDOSSIER:
+            let selArr = []
+            state.dossier.forEach((dossier, idx) => {
+                if (idx == action.payload.selId) {
+                    const selDoss = dossier
+                    selDoss.curId = true
+                    selArr.push(selDoss)
+                } else {
+                    selArr.push(dossier)
+                }
+            })
+            return { ...state, dossier: selArr }
         default:
             return state;
     }
