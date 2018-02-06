@@ -35,6 +35,8 @@ class App extends Component {
     evt.preventDefault();
     this.props.clrActive()
     this.props.newDossier({ curId: true, title: this.state.titleVal, items: [{item: ''}] })
+    this.setState({ titleVal: '' })
+
   }
 
   onSelTitle(evt) {
@@ -65,96 +67,92 @@ class App extends Component {
     let curDoss = undefined
     this.props.dossier.forEach((dossier, idx) => {
       if (dossier.curId) {
-          curDoss = dossier
-      }})
+        curDoss = dossier
+      }
+    })
 
-        return (
+    return (
       <div className="App">
         <header className="App-header">
           <h1 className="App-title">{this.props.title}</h1>
         </header>
         <p className="App-intro"></p>
         <form onSubmit>
-          <div className="card">
-              <div className="row">
-                <div className="small-3 columns md-text-field with-floating-label icon-left">
-                  <input type="search" id="title_in" placeholder='Title' value={this.state.titleVal} onChange={this.onTitleIn} />
-                  <label for="title_in"></label>
-                  <span className="error">{this.state.titleMsg}</span>
-                  <div className="small-9 columns">&nbsp;</div>
-                </div>
+
+          <div className="row">
+            <div className="small-1 columns">&nbsp;</div>
+            <div className="small-4 columns md-text-field with-floating-label icon-left">
+              <div className="card">
+                <input type="search" id="title_in" placeholder='Title' value={this.state.titleVal} onChange={this.onTitleIn} />
+                <label for="title_in"></label>
+                <span className="error">{this.state.titleMsg}</span>
+                <div className="small-2 columns">&nbsp;</div>
               </div>
               <div className="row">
-                <div className="small-2 columns">
-                  <button className="button btn-cta" disabled={this.state.disableSbmBtn} onClick={this.onAddTitle}>Add New Tab</button>
+                <div className="small-12 columns">&nbsp;</div>
+                <div className="row">
+                  <div className="small-2 columns" >&nbsp;</div>
+                  <button className="button btn-cta small-4 columns" disabled={this.state.disableSbmBtn} onClick={this.onAddTitle}>Add New Tab</button>
+                  <div className="small-2 columns" >&nbsp;</div>
                 </div>
-                <div className="small-10 columns" >&nbsp;</div>
               </div>
             </div>
+          </div>
 
-          <div className="card">
-            <ul className="filter-nav">
+          <div className="row">
+            <ul className="tabs small-8 columns">
               {this.props.dossier.map((dossier, idx) => {
                 if (dossier.curId) {
                   return (
-                    <li className="filter-nav-entry active" key={idx} ><button id={idx} onClick={this.onSelTitle}>{dossier.title}</button></li>)
+                    <li className="tab-title active" key={idx} ><button id={idx} onClick={this.onSelTitle}>{dossier.title}</button></li>)
                 }
                 else {
                   return (
-                    <li className="filter-nav-entry" key={idx} ><button id={idx} onClick={this.onSelTitle}>{dossier.title}</button></li>)
+                    <li className="tab-title" key={idx} ><button id={idx} onClick={this.onSelTitle}>{dossier.title}</button></li>)
                 }
               })}
             </ul>
+            <div className="small-4 columns" >&nbsp;</div>
           </div>
 
-          <div className="card">
-                    {curDoss ? curDoss.items.map((item, idx) => {
-                  return (<div className="row">
-                            <div className="small-2 columns">
-                              <p className="small-10 columns" key={idx}>{item.item}</p>
-                            </div>
-                          </div>)
-                    }): <p> Hello There </p>
-                  }
+          <div className="row">
+            <div className="small-4 columns" >&nbsp;
+              <div className="card">
+                {curDoss ?
+                  curDoss.items.map((item, idx) => {
+                    return (
+                      <div className="row">
+                        {/* <div className="small-2 columns"> */}
+                          <p className="small-4 columns" key={idx}>{item.item}</p>
+                        {/* </div> */}
+                      </div>
+                    )
+                  })
+                  : <p>&nbsp;</p>}
+              </div>
+            </div>
           </div>
 
-          <div className="card">
-            <div className="row">
-              <div className="small-3 columns md-text-field with-floating-label icon-left">
+          <div className="row">
+            <div className="small-12 columns" >&nbsp;</div>
+          </div>
+
+          <div className="row">
+            <div className="small-4 columns md-text-field with-floating-label icon-left">
+              <div className="card">
                 <input type="search" id="item_in" placeholder='New Item' value={this.state.itemVal} onChange={this.onItemIn} />
                 <label for="item_in"></label>
                 <span className="error">{this.state.itemMsg}</span>
               </div>
-              <div className="small-9 columns">&nbsp;</div>
             </div>
-            <div className="row">
-              <div className="small-2 columns">
-                <button className="button btn-cta" onClick={this.onAddItem}>Add New Item</button>
-              </div>
-              <div className="small-10 columns" >&nbsp;</div>
-            </div>
+            <button className="button btn-cta small-2 columns" onClick={this.onAddItem}>Add New Item</button>
+            <div className="small-6 columns" >&nbsp;</div>
           </div>
         </form>
-
       </div>
     );
   }
 }
-
-// class RenderTabItems extends Component {
-//   render() {
-//     return (
-//       <div className="card">
-//         <div className="row">
-//           <div className="small-2 columns">
-//             {this.props.items.map(({item}) =>
-//             <li>{item}</li>)}
-//           </div>
-//         </div>
-//       </div>
-//     )
-//   }
-// }
 
 const mapStateToProps = (state) => {
   return {
