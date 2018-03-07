@@ -34,7 +34,7 @@ class App extends Component {
   onAddTitle(evt) {
     evt.preventDefault();
     this.props.clrActive()
-    this.props.newDossier({ curId: true, title: this.state.titleVal, items: [{item: ''}] })
+    this.props.newDossier({ curId: true, title: this.state.titleVal, items: [{ item: '' }] })
     this.setState({ titleVal: '' })
 
   }
@@ -58,11 +58,11 @@ class App extends Component {
     this.props.dossier.forEach((dossier, idx) => {
       if (dossier.curId) {
         this.props.addNewItem({ selId: idx, item: this.state.itemVal })
-        this.setState({itemVal: ''})
+        this.setState({ itemVal: '' })
       }
     })
   }
-  
+
   render() {
     let curDoss = undefined
     this.props.dossier.forEach((dossier, idx) => {
@@ -80,19 +80,14 @@ class App extends Component {
         <form onSubmit>
 
           <div className="row">
-            <div className="small-1 columns">&nbsp;</div>
             <div className="small-4 columns md-text-field with-floating-label icon-left">
               <div className="card">
                 <input type="search" id="title_in" placeholder='Title' value={this.state.titleVal} onChange={this.onTitleIn} />
                 <label for="title_in"></label>
                 <span className="error">{this.state.titleMsg}</span>
-                <div className="small-2 columns">&nbsp;</div>
-              </div>
-              <div className="row">
-                <div className="small-12 columns">&nbsp;</div>
+                <div className="small-1 columns">&nbsp;</div>
                 <div className="row">
-                  <div className="small-2 columns" >&nbsp;</div>
-                  <button className="button btn-cta small-4 columns" disabled={this.state.disableSbmBtn} onClick={this.onAddTitle}>Add New Tab</button>
+                  <button className="button btn-cta small-2 columns" disabled={this.state.disableSbmBtn} onClick={this.onAddTitle}>Add New Tab</button>
                   <div className="small-2 columns" >&nbsp;</div>
                 </div>
               </div>
@@ -123,7 +118,7 @@ class App extends Component {
                     return (
                       <div className="row">
                         {/* <div className="small-2 columns"> */}
-                          <p className="small-4 columns" key={idx}>{item.item}</p>
+                        <p className="small-4 columns" key={idx}>{item.item}</p>
                         {/* </div> */}
                       </div>
                     )
@@ -143,10 +138,13 @@ class App extends Component {
                 <input type="search" id="item_in" placeholder='New Item' value={this.state.itemVal} onChange={this.onItemIn} />
                 <label for="item_in"></label>
                 <span className="error">{this.state.itemMsg}</span>
+                <div className="row">
+                  <div className="small-1 columns" >&nbsp;</div>
+                  <button className="button btn-cta small-2 columns" onClick={this.onAddItem}>Add New Item</button>
+                  <div className="small-2 columns" >&nbsp;</div>
+                </div>
               </div>
             </div>
-            <button className="button btn-cta small-2 columns" onClick={this.onAddItem}>Add New Item</button>
-            <div className="small-6 columns" >&nbsp;</div>
           </div>
         </form>
       </div>
